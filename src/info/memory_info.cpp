@@ -2,8 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <ncurses.h>
-#include <sstream>
 
 using namespace std;
 

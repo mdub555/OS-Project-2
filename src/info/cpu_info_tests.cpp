@@ -109,3 +109,21 @@ TEST(GetCpuInfo, GuestNiceTime) {
   EXPECT_EQ(0LL, cpus[1].guest_nice_time);
   EXPECT_EQ(0LL, cpus[5].guest_nice_time);
 }
+
+
+TEST(GetCpuInfo, CpuSubtraction) {
+  vector<CpuInfo> cpus = get_cpu_info();
+  ASSERT_EQ(9, cpus.size());
+
+  CpuInfo diff = cpus[0] - cpus[1];
+  EXPECT_EQ(603344LL, diff.user_time);
+  EXPECT_EQ(181372LL, diff.nice_time);
+  EXPECT_EQ(178205LL, diff.system_time);
+  EXPECT_EQ(251520014LL, diff.idle_time);
+  EXPECT_EQ(128595LL, diff.io_wait_time);
+  EXPECT_EQ(2LL, diff.irq_time);
+  EXPECT_EQ(51190LL, diff.softirq_time);
+  EXPECT_EQ(0LL, diff.steal_time);
+  EXPECT_EQ(0LL, diff.guest_time);
+  EXPECT_EQ(0LL, diff.guest_nice_time);
+}
