@@ -21,5 +21,8 @@ LoadAverageInfo get_load_average() {
     >> info.one_min
     >> info.five_mins
     >> info.fifteen_mins;
+
+  loadavg_file.close();
+
   return info;
 }

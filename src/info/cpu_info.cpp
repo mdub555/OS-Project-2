@@ -37,6 +37,8 @@ vector<CpuInfo> get_cpu_info() {
     all_cpus.push_back(info);               // add it to the vector
   }
 
+  stat_file.close();
+
   return all_cpus;
 }
 
