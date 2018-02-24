@@ -160,34 +160,6 @@ ProcessInfo get_process(int pid, const char* basedir) {
     process.threads = get_all_processes(thread_dir.c_str());
   }
 
-  ///////////////////////////
-  // calculate cpu_percent //
-  ///////////////////////////
-  // calculated by the amount of time spent executing this program since the start of the program.
-  // get total active time, including time waiting for children processes
-  unsigned long total_time = process.utime + process.stime + process.cutime + process.cstime;
-  // get system frequency
-  long hertz = sysconf(_SC_CLK_TCK);
-  if (hertz == -1) {
-    perror("Could not get system frequency");
-    exit(errno);
-  }
-  // get system uptime (total)
-  ifstream uptime_file(PROC_ROOT "/uptime");
-  if (!uptime_file) {
-    cerr << "Unable to read from /proc/uptime" << endl;
-    exit(EXIT_FAILURE);
-  }
-  long uptime;
-  uptime_file >> uptime;
-  uptime_file.close();
-
-  // get the number of seconds the process has been running
-  double seconds = uptime - (process.starttime / hertz);
-
-  // get the percent of time used executing this process (time executing / time since start)
-  process.cpu_percent = 100 * ((total_time / hertz) / seconds);
-
   return process;
 }
 

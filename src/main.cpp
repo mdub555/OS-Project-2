@@ -2,6 +2,8 @@
  * Contains the main() routine of what will eventually be your version of top.
  */
 
+#include "info/cpu_info.h"
+#include "info/system_info.h"
 #include <cstdlib>
 #include <ncurses.h>
 
@@ -39,14 +41,37 @@ int main() {
 
   int tick = 1;
 
-  while (true) {
-    wclear(stdscr);
+  SystemInfo prev = get_system_info();
 
+  while (true) {
+    SystemInfo current = get_system_info();
+    CpuInfo delta = current.cpus[0] - prev.cpus[0];
+
+    // calculate the cpu_percent for each of the processes
+    for (ProcessInfo curr_proc : current.processes) {
+      for (ProcessInfo prev_proc : prev.processes) {
+        // find the current and previous process of the same pid
+        if (curr_proc.pid == prev_proc.pid) {
+          // get total execution time for this process in this time step
+          unsigned long proc_time = curr_proc.utime + curr_proc.stime
+                                  + curr_proc.cutime + curr_proc.cstime
+                                  - prev_proc.utime - prev_proc.stime
+                                  - prev_proc.cutime - prev_proc.cstime;
+          // set percent of cpu time
+          curr_proc.cpu_percent = (double)proc_time / delta.total_time();
+          break;
+        }
+      }
+    }
+
+    wclear(stdscr);
     // Display the counter using printw (an ncurses function)
     printw("Behold, the number:\n%d", tick++);
-
     // Redraw the screen.
     refresh();
+
+    // update previous variables
+    prev = current;
 
     // End the loop and exit if Q is pressed
     exit_if_user_presses_q();
