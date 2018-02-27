@@ -46,12 +46,12 @@ SystemInfo get_system_info() {
     // check if process is running
     if (proc.state == 'R') system.num_running++;
     // check all threads for type
+    if (proc.is_kernel_thread()) system.num_kernel_threads++; // kernel threads only at top level
     for (ProcessInfo thread : proc.threads) {
-      if (thread.is_thread()) system.num_threads++;
-      if (thread.is_user_thread()) system.num_user_threads++;
-      if (thread.is_kernel_thread()) system.num_kernel_threads++;
+      if (thread.is_user_thread()) system.num_user_threads++; // user threads never in top level
     }
   }
+  system.num_threads = system.num_kernel_threads + system.num_user_threads;
 
   return system;
 }
