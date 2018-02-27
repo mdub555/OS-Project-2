@@ -25,6 +25,29 @@ void exit_if_user_presses_q() {
 }
 
 
+/** Makes a progress bar starting at the current cursor position and ending
+ *  at the end of the line.
+ *  @arg fraction the fraction of the progress desired to display
+ */
+void progressBar(double fraction) {
+  // starting position of the bar
+  int start = getcurx(stdscr)+1;
+  // total number of columns for the bar (leave space for the newline
+  int total = COLS - start - 2;
+  // get total number of columns that will be filled in
+  int progress = total * fraction;
+  addch('[');
+  for (int i = 0; i < progress; i++) {
+    addch(ACS_CKBOARD);
+  }
+  for (int i = progress; i < total; i++) {
+    addch(' ');
+  }
+  addch(']');
+  addch('\n');
+}
+
+
 /**
  * Entry point for the program.
  */
@@ -66,7 +89,10 @@ int main() {
 
     wclear(stdscr);
     // Display the counter using printw (an ncurses function)
-    printw("Behold, the number:\n%d", tick++);
+    printw("Behold, the number: %d", tick++);
+    for (int i = 0; i <= 10; i++) {
+      progressBar(i/10.);
+    }
     // Redraw the screen.
     refresh();
 
