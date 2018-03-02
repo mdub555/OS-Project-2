@@ -53,6 +53,7 @@ int main() {
     // Display the counter using printw (an ncurses function)
 
     print_uptime(current);
+    print_load_average(current);
 
     // Redraw the screen.
     refresh();

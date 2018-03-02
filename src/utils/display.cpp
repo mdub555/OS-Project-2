@@ -20,5 +20,10 @@ void progressBar(double fraction) {
 }
 
 void print_uptime(const SystemInfo& info) {
-  printw("Uptime: %s\n", human_readable_time(info.uptime).c_str());
+  printw("uptime: %s", human_readable_time(info.uptime).c_str());
+}
+
+void print_load_average(const SystemInfo& info) {
+  LoadAverageInfo ave = info.load_average;
+  printw("   load average: %.2f, %.2f, %.2f", ave.one_min, ave.five_mins, ave.fifteen_mins);
 }

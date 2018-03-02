@@ -8,3 +8,5 @@
 void progressBar(double fraction);
 
 void print_uptime(const SystemInfo& info);
+
+void print_load_average(const SystemInfo& info);
