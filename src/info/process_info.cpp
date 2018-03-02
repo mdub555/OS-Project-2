@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ncurses.h>
 
 using namespace std;
 
@@ -22,6 +23,7 @@ ProcessInfo get_process(int pid, const char* basedir) {
   ifstream stat_file(stat_file_name.c_str());
   if (!stat_file) {
     cerr << "Unable to read from " << stat_file_name << endl;
+    endwin();
     exit(EXIT_FAILURE);
   }
 
@@ -81,6 +83,7 @@ ProcessInfo get_process(int pid, const char* basedir) {
   ifstream statm_file(statm_file_name.c_str());
   if (!statm_file) {
     cerr << "Unable to read from " << statm_file_name << endl;
+    endwin();
     exit(EXIT_FAILURE);
   }
 
@@ -103,6 +106,7 @@ ProcessInfo get_process(int pid, const char* basedir) {
   ifstream cmdline_file(cmdline_file_name.c_str());
   if (!cmdline_file) {
     cerr << "Unable to read from " << cmdline_file_name << endl;
+    endwin();
     exit(EXIT_FAILURE);
   }
 
@@ -122,6 +126,7 @@ ProcessInfo get_process(int pid, const char* basedir) {
     ifstream comm_file(comm_file_name.c_str());
     if (!comm_file) {
       cerr << "Unable to read from " << comm_file_name << endl;
+      endwin();
       exit(EXIT_FAILURE);
     }
     comm_file >> process.command_line;
@@ -137,6 +142,7 @@ ProcessInfo get_process(int pid, const char* basedir) {
   ifstream status_file(status_file_name.c_str());
   if (!status_file) {
     cerr << "Unable to read from " << status_file_name << endl;
+    endwin();
     exit(EXIT_FAILURE);
   }
   string label;
@@ -186,10 +192,12 @@ vector<ProcessInfo> get_all_processes(const char* basedir) {
     }
     if (closedir(dirp) != 0) {
       perror(basedir);
+      endwin();
       exit(errno);
     }
   } else {
     perror(basedir);
+    endwin();
     exit(errno);
   }
 

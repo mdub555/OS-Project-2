@@ -56,6 +56,7 @@ int main() {
     print_load_average(current);
     print_num_processes(current);
     print_processors(current);
+    print_memory(current);
 
     // Redraw the screen.
     refresh();

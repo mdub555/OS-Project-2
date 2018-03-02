@@ -6,6 +6,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ncurses.h>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ double get_uptime() {
   ifstream uptime_file(PROC_ROOT "/uptime");
   if (!uptime_file) {
     cerr << "Unable to read from /proc/uptime" << endl;
+    endwin();
     exit(EXIT_FAILURE);
   }
   double uptime;
