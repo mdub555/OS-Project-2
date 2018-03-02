@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <ncurses.h>
 
 using namespace std;
 

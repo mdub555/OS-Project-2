@@ -4,10 +4,14 @@
 
 #include "info/cpu_info.h"
 #include "info/system_info.h"
+#include "utils/display.h"
 #include <cstdlib>
 #include <ncurses.h>
 
 using namespace std;
+
+
+void update_cpu_percent(const SystemInfo& previous, const SystemInfo& current);
 
 
 /**
@@ -25,29 +29,6 @@ void exit_if_user_presses_q() {
 }
 
 
-/** Makes a progress bar starting at the current cursor position and ending
- *  at the end of the line.
- *  @arg fraction the fraction of the progress desired to display
- */
-void progressBar(double fraction) {
-  // starting position of the bar
-  int start = getcurx(stdscr)+1;
-  // total number of columns for the bar (leave space for the newline
-  int total = COLS - start - 2;
-  // get total number of columns that will be filled in
-  int progress = total * fraction;
-  addch('[');
-  for (int i = 0; i < progress; i++) {
-    addch(ACS_CKBOARD);
-  }
-  for (int i = progress; i < total; i++) {
-    addch(' ');
-  }
-  addch(']');
-  addch('\n');
-}
-
-
 /**
  * Entry point for the program.
  */
@@ -62,12 +43,35 @@ int main() {
   // immediately respond to user input while not blocking indefinitely.
   timeout(1000);
 
-  int tick = 1;
-
   SystemInfo prev = get_system_info();
 
   while (true) {
     SystemInfo current = get_system_info();
+    update_cpu_percent(prev, current);
+
+    wclear(stdscr);
+    // Display the counter using printw (an ncurses function)
+
+    print_uptime(current);
+
+    // Redraw the screen.
+    refresh();
+
+    // update previous variables
+    prev = current;
+
+    // End the loop and exit if Q is pressed
+    exit_if_user_presses_q();
+  }
+
+  // ncurses teardown
+  endwin();
+
+  return EXIT_SUCCESS;
+}
+
+
+void update_cpu_percent(const SystemInfo& prev, const SystemInfo& current) {
     CpuInfo delta = current.cpus[0] - prev.cpus[0];
 
     // calculate the cpu_percent for each of the processes
@@ -86,25 +90,4 @@ int main() {
         }
       }
     }
-
-    wclear(stdscr);
-    // Display the counter using printw (an ncurses function)
-    printw("Behold, the number: %d", tick++);
-    for (int i = 0; i <= 10; i++) {
-      progressBar(i/10.);
-    }
-    // Redraw the screen.
-    refresh();
-
-    // update previous variables
-    prev = current;
-
-    // End the loop and exit if Q is pressed
-    exit_if_user_presses_q();
-  }
-
-  // ncurses teardown
-  endwin();
-
-  return EXIT_SUCCESS;
 }
