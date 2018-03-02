@@ -5,8 +5,10 @@
 #include "info/cpu_info.h"
 #include "info/system_info.h"
 #include "utils/display.h"
+#include "utils/compare.h"
 #include <cstdlib>
 #include <ncurses.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -51,6 +53,8 @@ int main() {
 
     wclear(stdscr);
     // Display the counter using printw (an ncurses function)
+
+    sort(current.processes.begin(), current.processes.end(), compareTime);
 
     print_uptime(current);
     print_load_average(current);
