@@ -17,3 +17,5 @@ void print_processors(const SystemInfo& info);
 void print_num_processes(const SystemInfo& info);
 
 void print_memory(const SystemInfo& info);
+
+void print_processes(SystemInfo& info);

@@ -57,6 +57,7 @@ int main() {
     print_num_processes(current);
     print_processors(current);
     print_memory(current);
+    print_processes(current);
 
     // Redraw the screen.
     refresh();
