@@ -54,6 +54,7 @@ int main() {
 
     print_uptime(current);
     print_load_average(current);
+    print_num_processes(current);
     print_processors(current);
 
     // Redraw the screen.

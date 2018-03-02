@@ -29,12 +29,17 @@ void print_load_average(const SystemInfo& info) {
 }
 
 void print_processors(const SystemInfo& info) {
-  printw("    |   user mode   |  kernel mode  |    idling\n");
-  printw("----|---------------|---------------|--------------\n");
+  printw("      |   user mode   |  kernel mode  |    idling\n");
+  printw(" -----|---------------|---------------|---------------\n");
   for (CpuInfo cpu : info.cpus) {
-    printw("cpu | %13s | %13s | %13s\n",
+    printw("  cpu | %13s | %13s | %13s\n",
             human_readable_time(cpu.user_time).c_str(),
             human_readable_time(cpu.system_time).c_str(),
             human_readable_time(cpu.idle_time).c_str());
   }
+}
+
+void print_num_processes(const SystemInfo& info) {
+  printw("Processes: %i total, %i running", info.num_processes, info.num_running);
+  printw("  Threads: %i user, %i kernel\n", info.num_user_threads, info.num_kernel_threads);
 }
