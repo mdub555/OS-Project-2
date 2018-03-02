@@ -25,5 +25,16 @@ void print_uptime(const SystemInfo& info) {
 
 void print_load_average(const SystemInfo& info) {
   LoadAverageInfo ave = info.load_average;
-  printw("   load average: %.2f, %.2f, %.2f", ave.one_min, ave.five_mins, ave.fifteen_mins);
+  printw("   load average: %.2f, %.2f, %.2f\n", ave.one_min, ave.five_mins, ave.fifteen_mins);
+}
+
+void print_processors(const SystemInfo& info) {
+  printw("    |   user mode   |  kernel mode  |    idling\n");
+  printw("----|---------------|---------------|--------------\n");
+  for (CpuInfo cpu : info.cpus) {
+    printw("cpu | %13s | %13s | %13s\n",
+            human_readable_time(cpu.user_time).c_str(),
+            human_readable_time(cpu.system_time).c_str(),
+            human_readable_time(cpu.idle_time).c_str());
+  }
 }

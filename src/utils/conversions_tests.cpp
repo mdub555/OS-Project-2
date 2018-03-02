@@ -3,7 +3,7 @@
 
 // test seconds convert to days, hrs, mins, secs
 TEST(HumanReadable, TimeWithDay) {
-  EXPECT_EQ("1 days, 15:34:19", human_readable_time(142459L));
+  EXPECT_EQ("1d, 15:34:19", human_readable_time(142459L));
 }
 
 // test seconds convert to days, hrs, mins, secs

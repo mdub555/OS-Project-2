@@ -14,7 +14,7 @@ std::string human_readable_time(long seconds) {
 
   std::string result = "";
   if (days > 0) {
-    result += std::to_string(days) + " days, ";
+    result += std::to_string(days) + "d, ";
   }
   if (hours < 10) result += "0";
   result += std::to_string(hours) + ":";
