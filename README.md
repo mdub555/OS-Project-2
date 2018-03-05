@@ -165,3 +165,7 @@ machines prior to submitting them.
 Start early and ask questions!
 
 ...or not. I'm a sign, not a cop. =)
+
+## Graded
+* Score tag deliverable-1: 20/20
+
