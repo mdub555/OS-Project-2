@@ -1,3 +1,86 @@
+# MyTop
+
+## Name
+Mitchell Waibel
+
+## Files
+* `README.txt`
+  This file.
+* `makefile`
+  Used to build the project, either for testing or running.
+* `src/`
+  * `main.cpp`
+    The file which calles all the other functions to gather data on the system, and displays
+    it to the terminal.
+  * `info/`
+    * `cpu_info.cpp`
+      Opens the necessary files and reads the data needed for filling a CpuInfo variable.
+    * `cpu_info.h`
+      Holds struct declaration of CpuInfo.
+    * `cpu_info_tests.cpp`
+      Tests for retrieving the cpu info.
+    * `load_average_info.cpp`
+      Opens the necessary files and reads the data needed for filling a LoadAverageInfo variable.
+    * `load_average_info.h`
+      Holds struct declaration of LoadAverageInfo.
+    * `load_average_info_tests.cpp`
+      Tests for retrieving the load average info.
+    * `memory_info.cpp`
+      Opens the necessary files and reads the data needed for filling a MemoryInfo variable.
+    * `memory_info.h`
+      Holds struct declaration of MemoryInfo.
+    * `memory_info_tests.cpp`
+      Tests for retrieving the memory info.
+    * `process_info.cpp`
+      Opens the necessary files and reads the data needed for filling a ProcessInfo variable.
+    * `process_info.h`
+      Holds struct declaration of ProcessInfo.
+    * `process_info_tests.cpp`
+      Tests for retrieving the process info.
+    * `system_info.cpp`
+      Gets the data for the entire system, including CpuInfo, LoadAverageInfo, MemoryInfo, and
+      ProcessInfo.
+    * `system_info.h`
+      Holds struct declaration of SystemInfo, which holds the information for the entire system.
+    * `system_info_tests.cpp`
+      Tests for retrieving the system info.
+  * `utils/`
+    * `compare.cpp`
+      Comparator functions used for sorting the processes.
+    * `compare.h`
+      Declare the comparator functions.
+    * `conversions.cpp`
+      Convert time and memory into human readable formats.
+    * `conversions.h`
+      Declare the function for converting the format.
+    * `conversions_tests.cpp`
+      Test that the conversions get the desired values.
+    * `display.cpp`
+      All functions used to display information to the terminal.
+    * `display.h`
+      Declare all the functions needed for displaying the information.
+    * `flags.cpp`
+      Parse the command line arguments and display the help if desired.
+    * `flags.h`
+      Declare the parse and show help functions.
+
+## Features
+This top program uses a dynamic window scheme, which sizes the process table
+to fit the screen. There is a minimum size for this feature, 52 x 15, but this will
+not show any of the processes.
+
+## Time Spent
+| Deliverable     | Time     |
+| --------------- | --------:|
+| Read from /proc |  6 hours |
+| Output all data |  7 hours |
+| _Total_         | 13 hours |
+
+## Ideal Terminal Size
+To show at least 10 processes, the size must be at least 52 x 25, but can be any size
+larger than that to fit more.
+
+
 # Project 2 - Custom Top Implementation
 
 The goal of this project is to implement a `top(1)`-like command for gleaning
