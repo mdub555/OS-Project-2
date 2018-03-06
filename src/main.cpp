@@ -6,6 +6,7 @@
 #include "info/system_info.h"
 #include "utils/display.h"
 #include "utils/compare.h"
+#include "utils/flags.h"
 #include <cstdlib>
 #include <ncurses.h>
 #include <algorithm>
@@ -34,7 +35,10 @@ void exit_if_user_presses_q() {
 /**
  * Entry point for the program.
  */
-int main() {
+int main(int argc, char** argv) {
+  flags flgs {10, CPU};
+  parse_cmd_line(argc, argv, flgs);
+
   // ncurses initialization
   initscr();
 
@@ -43,11 +47,26 @@ int main() {
 
   // Set getch to return after 1000 milliseconds; this allows the program to
   // immediately respond to user input while not blocking indefinitely.
-  timeout(1000);
+  timeout(flgs.delay * 100);
 
   SystemInfo prev = get_system_info();
 
   SortFn sort_fn = &compareCpu;
+  switch (flgs.sort_key) {
+  case PID:
+    sort_fn = &comparePid;
+    break;
+  case MEM:
+    sort_fn = &compareMem;
+    break;
+  case TIME:
+    sort_fn = &compareTime;
+    break;
+  case CPU:
+  default:
+    sort_fn = &compareCpu;
+    break;
+  };
 
   while (true) {
     SystemInfo current = get_system_info();
@@ -61,7 +80,7 @@ int main() {
     print_uptime(current);
     print_load_average(current.load_average);
     print_num_processes(current);
-    print_processors(current.cpus);
+    print_processors(prev.cpus, current.cpus);
     print_memory(current.memory_info);
     print_processes(current.processes);
 

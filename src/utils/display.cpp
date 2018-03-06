@@ -33,14 +33,31 @@ void print_load_average(const LoadAverageInfo& ave) {
 }
 
 
-void print_processors(std::vector<CpuInfo>& cpus) {
-  printw("      |   user mode   |  kernel mode  |    idling\n");
-  for (CpuInfo& cpu : cpus) {
-    printw("  cpu | %13s | %13s | %13s\n",
-            human_readable_time(cpu.user_time).c_str(),
-            human_readable_time(cpu.system_time).c_str(),
-            human_readable_time(cpu.idle_time).c_str());
+void print_processors(std::vector<CpuInfo>& prev, std::vector<CpuInfo>& curr) {
+  printw("      |   user  |  kernel | idling\n");
+  for (size_t i = 0; i < curr.size(); i++) {
+    CpuInfo info = curr[i] - prev[i];
+    i == 0 ? printw(" cpu ") : printw(" cpu%i", i-1);
+    printw(" | %6.2f\% | %6.2f\% | %6.2f\%\n",
+            get_cpu_percent_user(info),
+            get_cpu_percent_kernel(info),
+            get_cpu_percent_idle(info));
   }
+}
+
+
+double get_cpu_percent_user(const CpuInfo& cpu) {
+  return (double)cpu.user_time / (double)cpu.total_time() * 100.0;
+}
+
+
+double get_cpu_percent_kernel(const CpuInfo& cpu) {
+  return (double)cpu.total_system_time() / (double)cpu.total_time() * 100.0;
+}
+
+
+double get_cpu_percent_idle(const CpuInfo& cpu) {
+  return (double)cpu.total_idle_time() / (double)cpu.total_time() * 100.0;
 }
 
 
@@ -60,14 +77,14 @@ void print_memory(const MemoryInfo& mem) {
 
 
 void print_processes(std::vector<ProcessInfo>& proc) {
-  std::string title_row = "  PID |   Res   | S | CPU\% |   Time   | Command\n";
+  std::string title_row = "  PID  |    Res   | S |  CPU\% |   Time   | Command\n";
   printw(title_row.c_str());
   int rows = LINES - getcury(stdscr);
   int cmd_cols = COLS - (title_row.size()-7);
   for (int i = 0; i < rows; i++) {
     unsigned long time = (proc[i].utime + proc[i].stime) / sysconf(_SC_CLK_TCK);
     std::string res = human_readable_memory(proc[i].rss * sysconf(_SC_PAGESIZE) / 1024);
-    printw("%5i |%8s | %c |  %2.1f | %s | %.*s\n",
+    printw("%6i | %8s | %c | %5.1f | %s | %.*s\n",
           proc[i].pid, res.c_str(), proc[i].state,
           proc[i].cpu_percent,
           human_readable_time(time).c_str(),
