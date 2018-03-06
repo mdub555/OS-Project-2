@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <ncurses.h>
 
 using namespace std;
 
@@ -12,8 +11,7 @@ vector<CpuInfo> get_cpu_info() {
   ifstream stat_file(PROC_ROOT "/stat");
   if (!stat_file) {
     cerr << "Unable to read from /proc/stat" << endl;
-    endwin();
-    exit(EXIT_FAILURE);
+    return vector<CpuInfo>();
   }
 
   vector<CpuInfo> all_cpus;                 // declare vector

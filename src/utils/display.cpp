@@ -1,6 +1,7 @@
 #include "display.h"
 #include "conversions.h"
 #include <algorithm>
+#include <unistd.h>
 
 
 void progressBar(double fraction) {
@@ -27,15 +28,14 @@ void print_uptime(const SystemInfo& info) {
 }
 
 
-void print_load_average(const SystemInfo& info) {
-  LoadAverageInfo ave = info.load_average;
+void print_load_average(const LoadAverageInfo& ave) {
   printw("   Load Average: %.2f, %.2f, %.2f\n", ave.one_min, ave.five_mins, ave.fifteen_mins);
 }
 
 
-void print_processors(const SystemInfo& info) {
+void print_processors(std::vector<CpuInfo>& cpus) {
   printw("      |   user mode   |  kernel mode  |    idling\n");
-  for (CpuInfo cpu : info.cpus) {
+  for (CpuInfo& cpu : cpus) {
     printw("  cpu | %13s | %13s | %13s\n",
             human_readable_time(cpu.user_time).c_str(),
             human_readable_time(cpu.system_time).c_str(),
@@ -50,8 +50,7 @@ void print_num_processes(const SystemInfo& info) {
 }
 
 
-void print_memory(const SystemInfo& info) {
-  MemoryInfo mem = info.memory_info;
+void print_memory(const MemoryInfo& mem) {
   unsigned long long used = mem.total_memory - mem.free_memory;
   printw("Mem: %s used + %s free / %s total\n",
          human_readable_memory(used).c_str(),
@@ -60,15 +59,16 @@ void print_memory(const SystemInfo& info) {
 }
 
 
-void print_processes(SystemInfo& info) {
-  std::vector<ProcessInfo>& proc = info.processes;
-  printw("  PID |  Res | S | CPU\% |   Time   | Command\n");
+void print_processes(std::vector<ProcessInfo>& proc) {
+  std::string title_row = "  PID |   Res   | S | CPU\% |   Time   | Command\n";
+  printw(title_row.c_str());
   int rows = LINES - getcury(stdscr);
-  int cmd_cols = COLS - 38;
+  int cmd_cols = COLS - (title_row.size()-7);
   for (int i = 0; i < rows; i++) {
-    unsigned long time = proc[i].utime + proc[i].stime;
-    printw("%5i |%5lu | %c |  %2.1f | %s | %.*s\n",
-          proc[i].pid, proc[i].rss, proc[i].state,
+    unsigned long time = (proc[i].utime + proc[i].stime) / sysconf(_SC_CLK_TCK);
+    std::string res = human_readable_memory(proc[i].rss * sysconf(_SC_PAGESIZE) / 1024);
+    printw("%5i |%8s | %c |  %2.1f | %s | %.*s\n",
+          proc[i].pid, res.c_str(), proc[i].state,
           proc[i].cpu_percent,
           human_readable_time(time).c_str(),
           cmd_cols, proc[i].command_line.c_str());

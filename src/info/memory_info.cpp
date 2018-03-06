@@ -39,8 +39,7 @@ MemoryInfo get_memory_info() {
     meminfo_file.close();
   } else {
     cerr << "Unable to open /proc/meminfo" << endl;
-    endwin();
-    exit(EXIT_FAILURE);
+    return MemoryInfo();
   }
   return info;
 }

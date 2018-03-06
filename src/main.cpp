@@ -13,7 +13,7 @@
 using namespace std;
 
 
-void update_cpu_percent(const SystemInfo& previous, const SystemInfo& current);
+void update_cpu_percent(SystemInfo& previous, SystemInfo& current);
 
 
 /**
@@ -47,6 +47,8 @@ int main() {
 
   SystemInfo prev = get_system_info();
 
+  SortFn sort_fn = &compareCpu;
+
   while (true) {
     SystemInfo current = get_system_info();
     update_cpu_percent(prev, current);
@@ -54,14 +56,14 @@ int main() {
     wclear(stdscr);
     // Display the counter using printw (an ncurses function)
 
-    sort(current.processes.begin(), current.processes.end(), compareTime);
+    sort(current.processes.begin(), current.processes.end(), sort_fn);
 
     print_uptime(current);
-    print_load_average(current);
+    print_load_average(current.load_average);
     print_num_processes(current);
-    print_processors(current);
-    print_memory(current);
-    print_processes(current);
+    print_processors(current.cpus);
+    print_memory(current.memory_info);
+    print_processes(current.processes);
 
     // Redraw the screen.
     refresh();
@@ -80,23 +82,23 @@ int main() {
 }
 
 
-void update_cpu_percent(const SystemInfo& prev, const SystemInfo& current) {
-    CpuInfo delta = current.cpus[0] - prev.cpus[0];
+void update_cpu_percent(SystemInfo& prev, SystemInfo& current) {
+  CpuInfo delta = current.cpus[1] - prev.cpus[1];
 
-    // calculate the cpu_percent for each of the processes
-    for (ProcessInfo curr_proc : current.processes) {
-      for (ProcessInfo prev_proc : prev.processes) {
-        // find the current and previous process of the same pid
-        if (curr_proc.pid == prev_proc.pid) {
-          // get total execution time for this process in this time step
-          unsigned long proc_time = curr_proc.utime + curr_proc.stime
-                                  + curr_proc.cutime + curr_proc.cstime
-                                  - prev_proc.utime - prev_proc.stime
-                                  - prev_proc.cutime - prev_proc.cstime;
-          // set percent of cpu time
-          curr_proc.cpu_percent = (double)proc_time / delta.total_time();
-          break;
-        }
+  // calculate the cpu_percent for each of the processes
+  for (ProcessInfo& curr_proc : current.processes) {
+    for (ProcessInfo& prev_proc : prev.processes) {
+      // find the current and previous process of the same pid
+      if (curr_proc.pid == prev_proc.pid) {
+        // get total execution time for this process in this time step
+        unsigned long proc_time = curr_proc.utime + curr_proc.stime
+                                - prev_proc.utime - prev_proc.stime;
+        // set percent of cpu time
+        curr_proc.cpu_percent = (double)proc_time / (double)delta.total_time() * 100.0;
+        break;
+      } else {
+        curr_proc.cpu_percent = 0.0;
       }
     }
+  }
 }

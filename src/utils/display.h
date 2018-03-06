@@ -10,12 +10,12 @@ void progressBar(const std::vector<double>& fraction);
 
 void print_uptime(const SystemInfo& info);
 
-void print_load_average(const SystemInfo& info);
+void print_load_average(const LoadAverageInfo& ave);
 
-void print_processors(const SystemInfo& info);
+void print_processors(std::vector<CpuInfo>& cpus);
 
 void print_num_processes(const SystemInfo& info);
 
-void print_memory(const SystemInfo& info);
+void print_memory(const MemoryInfo& mem);
 
-void print_processes(SystemInfo& info);
+void print_processes(std::vector<ProcessInfo>& info);
