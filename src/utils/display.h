@@ -1,3 +1,4 @@
+#pragma once
 #include "../info/system_info.h"
 #include <ncurses.h>
 #include <vector>

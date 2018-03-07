@@ -1,10 +1,4 @@
-/*
-
--d --delay=DELAY       tenths of a second
--d --sort-key COLUMN   PID, CPU, MEM, TIME
--h --help
-
-*/
+#pragma once
 #include <string>
 #include <iostream>
 #include <getopt.h>

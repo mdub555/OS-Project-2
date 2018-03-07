@@ -1,3 +1,4 @@
+#pragma once
 #include "../info/process_info.h"
 
 typedef bool (*SortFn) (const ProcessInfo&, const ProcessInfo&);

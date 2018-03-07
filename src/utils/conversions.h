@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 std::string human_readable_time(long seconds);
