@@ -248,3 +248,8 @@ machines prior to submitting them.
 Start early and ask questions!
 
 ...or not. I'm a sign, not a cop. =)
+
+## Graded
+* Score tag final: 180/180
+* Score Total: 200/200
+
